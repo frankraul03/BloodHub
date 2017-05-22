@@ -3,7 +3,6 @@ package com.example.rp.bloodhub;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,8 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -34,8 +31,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener
          {
-             private LocationManager locationManager;
-             private LocationListener locationListener;
+             // private LocationManager locationManager;
+             // private LocationListener locationListener;
              private GoogleMap mMap;
              GoogleApiClient mGoogleApiClient;
              Location mLastLocation;
@@ -47,16 +44,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         //1. Changed from SupportMapFragment to MapFragment only
         //2. Changed again to SupportMapFragment WTF
+
+
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
 
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
 
@@ -72,21 +75,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
+
                 buildGoogleApiClient();
+
                 mMap.setMyLocationEnabled(true);
+
             }
+
         }
-        else {
-            buildGoogleApiClient();
-            mMap.setMyLocationEnabled(true);
+
+        else
+            {
+
+                buildGoogleApiClient();
+
+                mMap.setMyLocationEnabled(true);
         }
 
         // Add a marker in Sydney and move the camera
@@ -97,25 +109,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //1. Google API Client method for  using LOCATION SERVICES and connection
              protected synchronized void buildGoogleApiClient() {
+
                  mGoogleApiClient = new GoogleApiClient.Builder(this)
                          .addConnectionCallbacks(this)
                          .addOnConnectionFailedListener(this)
                          .addApi(LocationServices.API)
                          .build();
+
                  mGoogleApiClient.connect();
+
              }
 
 
              @Override
              public void onConnected(@Nullable Bundle bundle) {
+
                  mLocationRequest = new LocationRequest();
-                 mLocationRequest.setInterval(1000);
-                 mLocationRequest.setFastestInterval(1000);
-                 mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                 mLocationRequest.setInterval(10000);
+                 mLocationRequest.setFastestInterval(10000);
+                 mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
                  if (ContextCompat.checkSelfPermission(this,
                          Manifest.permission.ACCESS_FINE_LOCATION)
                          == PackageManager.PERMISSION_GRANTED) {
                      LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
                  }
              }
 
@@ -128,6 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
              }
+
 
              @Override
              public void onLocationChanged(Location location) {
@@ -150,8 +168,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                  //stop location updates
                  if (mGoogleApiClient != null) {
+
                      LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-                 }
+
+                                                }
 
              }
 
@@ -188,7 +208,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                  }
              }
 
-             //***** Just addded for permission
+             //***** Just added for permission
              @Override
              public void onRequestPermissionsResult(int requestCode,
                                                     String permissions[], int[] grantResults) {
@@ -222,44 +242,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                      // You can add here other case statements according to your requirement.
                  }
              }
-             public void take_to_my_location(View v) {
-                 Toast.makeText(getBaseContext(), "Taking to the current location", Toast.LENGTH_LONG).show();
 
-                 Button my_map_loc = (Button) findViewById(R.id.my_map_loc);
-                 locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                 locationListener = new LocationListener() {
-                     @Override
-                     public void onLocationChanged(Location location) {
-
-                     }
-                 };
-
-                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                     // TODO: Consider calling
-                     //    ActivityCompat#requestPermissions
-                     // here to request the missing permissions, and then overriding
-                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                     //                                          int[] grantResults)
-                     // to handle the case where the user grants the permission. See the documentation
-                     // for ActivityCompat#requestPermissions for more details.
-                     return;
-                 } else {
-                     configureButton();
-                 }
-
-             }
-
-             private void configureButton() {
-                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                     // TODO: Consider calling
-                     //    ActivityCompat#requestPermissions
-                     // here to request the missing permissions, and then overriding
-                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                     //                                          int[] grantResults)
-                     // to handle the case where the user grants the permission. See the documentation
-                     // for ActivityCompat#requestPermissions for more details.
-                     return;
-                 }
-                 locationManager.requestLocationUpdates("gps", 5000, 0, (android.location.LocationListener) locationListener);
-             }
          }

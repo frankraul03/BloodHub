@@ -3,4 +3,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="my_location">MyLoc</string>
     <string name="google_maps_key">AIzaSyAWw-njhncSv7I_LNA9dFIiqOwYBc_v0-s</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="register">Register</string>
 </resources>
