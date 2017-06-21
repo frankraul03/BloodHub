@@ -38,7 +38,11 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
+            android:label="@string/title_activity_maps" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/reguser"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,10 +50,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
+            android:name=".RegisterActivity"
+            android:label="@string/title_activity_register"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity
+            android:name=".MySingleton"
+            android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".RegisterActivity"></activity>
+
     </application>
 
 </manifest>
